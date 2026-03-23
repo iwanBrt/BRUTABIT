@@ -95,9 +95,37 @@ src/
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{userId}/{document=**} {
-      allow read, write: if request.auth != null
-                         && request.auth.uid == userId;
+    // 1. Profil Pengguna (Membuka akses BACA agar bisa melihat nama di Chat/Beranda)
+    match /users/{userId} {
+      // Siapapun yang login bisa baca Profil (Nama/Foto)
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+      
+      // Kunci mati semua sub-datanya (Habit, Jurnal, Todo) buat privasi ketat!
+      match /{collectionId}/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // 2. Aturan untuk BERANDA (Post & Komunitas)
+    match /posts/{postId} {
+      allow read, create: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.authorId;
+      
+      // Aturan komentar di dalam post
+      match /comments/{commentId} {
+        allow read, write: if request.auth != null;
+      }
+    }
+
+    // Aturan untuk PRIVATE CHAT (Sangat Dijaga Privasinya!)
+    match /chats/{chatId} {
+      allow read, write: if request.auth != null;
+      
+      match /messages/{messageId} {
+        allow read, write: if request.auth != null;
+      }
     }
   }
 }

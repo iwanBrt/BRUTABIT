@@ -32,6 +32,8 @@ export const getMessagingInstance = async () => {
 // Firestore collection paths
 export const COLS = {
   users:    'users',
+  posts:    'posts',
+  chats:    'chats',
   habits:   (uid: string) => `users/${uid}/habits`,
   journals: (uid: string) => `users/${uid}/journals`,
   todos:    (uid: string) => `users/${uid}/todos`,

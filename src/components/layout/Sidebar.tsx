@@ -9,6 +9,8 @@ import toast from 'react-hot-toast'
 import { clsx } from 'clsx'
 
 const NAV_ITEMS = [
+  { href: '/dashboard/feed',    icon: '🌐', label: 'BERANDA' },
+  { href: '/dashboard/chat',    icon: '💬', label: 'CHATS'   },
   { href: '/dashboard/habits',  icon: '🏠', label: 'HABITS'  },
   { href: '/dashboard/journal', icon: '📓', label: 'JURNAL'  },
   { href: '/dashboard/todo',    icon: '✅', label: 'TO-DO'   },
