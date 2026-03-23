@@ -27,7 +27,7 @@ export function Sidebar() {
   const handleLogout = async () => {
     await logout()
     toast.success('👋 Sampai jumpa!')
-    router.replace('/auth/login')
+    router.replace('/')
   }
 
   return (

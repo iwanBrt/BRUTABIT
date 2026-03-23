@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(null, null, null)
         setLoading(false)
         if (!PUBLIC_PATHS.includes(pathname)) {
-          router.replace('/auth/login')
+          router.replace('/')
         }
       }
     })
