@@ -1,0 +1,159 @@
+/* src/app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --neo-border: 2.5px solid #0a0a0a;
+    --neo-border-lg: 3px solid #0a0a0a;
+    --neo-shadow: 5px 5px 0 #0a0a0a;
+    --neo-shadow-lg: 8px 8px 0 #0a0a0a;
+    --neo-shadow-sm: 3px 3px 0 #0a0a0a;
+  }
+
+  .dark {
+    --neo-border: 2.5px solid #f0f0f0;
+    --neo-border-lg: 3px solid #f0f0f0;
+    --neo-shadow: 5px 5px 0 #f0f0f0;
+    --neo-shadow-lg: 8px 8px 0 #f0f0f0;
+    --neo-shadow-sm: 3px 3px 0 #f0f0f0;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #0a0a0a; border-radius: 0; }
+  .dark ::-webkit-scrollbar-thumb { background: #f0f0f0; }
+}
+
+@layer components {
+  /* Neobrutalism base classes */
+  .neo-card {
+    @apply bg-neo-card dark:bg-neo-cardDk border-[2.5px] border-neo-black dark:border-white;
+    box-shadow: var(--neo-shadow);
+  }
+
+  .neo-card-lg {
+    @apply bg-neo-card dark:bg-neo-cardDk border-[3px] border-neo-black dark:border-white;
+    box-shadow: var(--neo-shadow-lg);
+  }
+
+  .neo-btn {
+    @apply font-mono font-bold text-xs uppercase tracking-widest px-4 py-2.5
+           border-[2px] border-neo-black dark:border-white
+           bg-white dark:bg-neo-cardDk
+           cursor-pointer transition-all duration-100;
+    box-shadow: var(--neo-shadow-sm);
+  }
+
+  .neo-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--neo-shadow);
+  }
+
+  .neo-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #0a0a0a;
+  }
+
+  .neo-btn-primary {
+    @apply neo-btn bg-brand-red text-white border-brand-red;
+  }
+
+  .neo-btn-yellow {
+    @apply neo-btn bg-brand-yellow text-neo-black border-neo-black;
+  }
+
+  .neo-btn-black {
+    @apply neo-btn bg-neo-black text-brand-yellow border-neo-black dark:bg-white dark:text-neo-black;
+  }
+
+  .neo-input {
+    @apply w-full font-body text-sm px-3 py-2.5
+           bg-neo-bg dark:bg-neo-bgDark
+           border-[2px] border-neo-black dark:border-white
+           text-neo-black dark:text-white
+           outline-none transition-all;
+  }
+
+  .neo-input:focus {
+    @apply bg-brand-yellow text-neo-black;
+    box-shadow: var(--neo-shadow-sm);
+  }
+
+  .neo-label {
+    @apply font-mono font-bold text-[10px] uppercase tracking-[2px] text-neo-black dark:text-white;
+  }
+
+  .neo-badge {
+    @apply font-mono font-bold text-[9px] uppercase tracking-[1px]
+           px-1.5 py-0.5 border-[1.5px] border-neo-black dark:border-white;
+  }
+
+  /* Sidebar */
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 font-mono font-bold text-[11px]
+           uppercase tracking-[1px] cursor-pointer transition-all duration-100
+           text-[#555] dark:text-[#888] border-b border-[#1a1a1a] dark:border-[#2a2a2a];
+  }
+
+  .sidebar-item:hover {
+    @apply text-brand-yellow bg-[#0d0d0d];
+  }
+
+  .sidebar-item.active {
+    @apply text-brand-yellow bg-[#111] dark:bg-[#111];
+    border-left: 3px solid #ffe600;
+  }
+
+  .sidebar-item .icon { @apply text-lg flex-shrink-0; }
+
+  /* Page header */
+  .page-header {
+    @apply sticky top-0 z-40 bg-neo-black dark:bg-black
+           border-b-[3px] border-brand-yellow
+           px-6 py-4 flex items-center justify-between;
+  }
+
+  .page-title {
+    @apply font-display text-3xl text-brand-yellow tracking-[3px];
+  }
+
+  /* Habit card */
+  .habit-card {
+    @apply neo-card-lg overflow-hidden animate-fade-in;
+  }
+
+  /* Day cell */
+  .day-cell {
+    @apply aspect-square flex items-center justify-center
+           cursor-pointer transition-all duration-100
+           border-r-[2px] border-neo-black dark:border-white last:border-r-0;
+  }
+
+  .day-cell:hover:not(.future) { @apply opacity-75; }
+  .day-cell.today { @apply outline outline-[3px] outline-neo-black dark:outline-white outline-offset-[-3px]; }
+  .day-cell.future { @apply opacity-25 cursor-not-allowed pointer-events-none; }
+
+  /* Todo item */
+  .todo-item {
+    @apply flex items-center border-[2px] border-neo-black dark:border-white
+           bg-white dark:bg-neo-cardDk overflow-hidden;
+    box-shadow: var(--neo-shadow-sm);
+  }
+}
+
+@layer utilities {
+  .text-shadow-neo {
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.8);
+  }
+}
