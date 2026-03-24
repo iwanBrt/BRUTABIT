@@ -12,6 +12,15 @@ import { useStore } from '@/store'
 
 const PUBLIC_PATHS = ['/auth/login', '/auth/register', '/auth/forgot-password', '/']
 
+const playNotifSound = () => {
+  try {
+    const audio = new Audio('/notif.mp3')
+    audio.play().catch(() => {})
+  } catch (e) {
+    // Ignore error (e.g., if audio autoplay blocked)
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -23,6 +32,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsubs: (() => void)[] = []
 
     const unsubAuth = onAuthStateChanged(async (user) => {
+      let firstLoadChat = true
+      let firstLoadNotif = true
+      let currentUnread = 0
+
       if (user) {
         setUser(user.uid, user.email, user.displayName)
 
@@ -69,6 +82,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 }
               })
               setUnreadChats(unread)
+              
+              if (!firstLoadChat && unread > currentUnread) {
+                playNotifSound()
+              }
+              currentUnread = unread
+              firstLoadChat = false
             }
           ),
           onSnapshot(
@@ -77,6 +96,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               const notifs = snap.docs.map(d => ({ id: d.id, ...d.data() }))
               notifs.sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
               setNotifications(notifs)
+              
+              if (!firstLoadNotif) {
+                const newAdded = snap.docChanges().some(c => c.type === 'added')
+                if (newAdded) playNotifSound()
+              }
+              firstLoadNotif = false
             },
             err => console.error("Notifications err:", err)
           )
