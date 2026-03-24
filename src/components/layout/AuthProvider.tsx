@@ -4,7 +4,7 @@
 import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import {
-  collection, doc, onSnapshot, getDoc, query, where, orderBy
+  collection, doc, onSnapshot, getDoc, query, where
 } from 'firebase/firestore'
 import { db, COLS } from '@/lib/firebase'
 import { onAuthStateChanged } from '@/lib/auth'
@@ -72,8 +72,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
           ),
           onSnapshot(
-            query(collection(db, COLS.notifications), where('userId', '==', user.uid), orderBy('createdAt', 'desc')),
-            snap => setNotifications(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+            query(collection(db, COLS.notifications), where('userId', '==', user.uid)),
+            snap => {
+              const notifs = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+              notifs.sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+              setNotifications(notifs)
+            },
+            err => console.error("Notifications err:", err)
           )
         )
 

@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useStore } from '@/store'
 import { db, COLS } from '@/lib/firebase'
-import { doc, collection, addDoc, onSnapshot, query, orderBy, setDoc, getDoc, deleteDoc, increment } from 'firebase/firestore'
+import { doc, collection, addDoc, onSnapshot, query, orderBy, setDoc, updateDoc, getDoc, deleteDoc, increment } from 'firebase/firestore'
 import { ArrowLeft, Send, Trash2 } from 'lucide-react'
 import { clsx } from 'clsx'
 
@@ -34,9 +34,9 @@ export default function ChatRoomPage() {
           [`unreadCount.${userId}`]: 0
         })
       } else {
-        await setDoc(roomRef, {
+        await updateDoc(roomRef, {
           [`unreadCount.${userId}`]: 0
-        }, { merge: true })
+        })
       }
     }
     ensureRoom()
@@ -70,11 +70,11 @@ export default function ChatRoomPage() {
     })
     
     const otherUid = (chatId as string).split('_').find(id => id !== userId)
-    await setDoc(doc(db, COLS.chats, chatId as string), {
+    await updateDoc(doc(db, COLS.chats, chatId as string), {
       updatedAt: new Date().toISOString(),
       lastMessage: msg,
       ...(otherUid ? { [`unreadCount.${otherUid}`]: increment(1) } : {})
-    }, { merge: true })
+    })
   }
 
   const handleDeleteMessage = async (msgId: string) => {
