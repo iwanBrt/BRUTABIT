@@ -4,7 +4,7 @@
 import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import {
-  collection, doc, onSnapshot, getDoc,
+  collection, doc, onSnapshot, getDoc, query, where, orderBy
 } from 'firebase/firestore'
 import { db, COLS } from '@/lib/firebase'
 import { onAuthStateChanged } from '@/lib/auth'
@@ -16,7 +16,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const { setUser, setHabits, setJournals, setTodos, setMoods,
-          setAlarms, setXpLog, setStats, setLoading } = useStore()
+          setAlarms, setXpLog, setStats, setLoading,
+          setUnreadChats, setNotifications } = useStore()
 
   useEffect(() => {
     const unsubs: (() => void)[] = []
@@ -57,6 +58,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setXpLog(snap.docs.map(d => ({ id: d.id, ...d.data() }) as any)
               .sort((a: any, b: any) => b.createdAt?.localeCompare(a.createdAt)))
           ),
+          onSnapshot(
+            query(collection(db, COLS.chats), where('participants', 'array-contains', user.uid)),
+            snap => {
+              let unread = 0
+              snap.docs.forEach(d => {
+                const data = d.data()
+                if (data.unreadCount && data.unreadCount[user.uid]) {
+                  unread += data.unreadCount[user.uid]
+                }
+              })
+              setUnreadChats(unread)
+            }
+          ),
+          onSnapshot(
+            query(collection(db, COLS.notifications), where('userId', '==', user.uid), orderBy('createdAt', 'desc')),
+            snap => setNotifications(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+          )
         )
 
         setLoading(false)

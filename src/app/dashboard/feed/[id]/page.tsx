@@ -61,6 +61,19 @@ export default function PostDetailPage() {
         comments: increment(1)
       })
 
+      // Send notification if commenting on someone else's post
+      if (post && post.authorId !== userId) {
+        await addDoc(collection(db, COLS.notifications), {
+          userId: post.authorId,
+          actorId: userId,
+          actorName: userName || 'Anonim',
+          type: 'comment',
+          postId: id as string,
+          read: false,
+          createdAt: new Date().toISOString()
+        })
+      }
+
       setNewComment('')
       toast.success('Komentar berhasil ditambahkan')
     } catch (e) {

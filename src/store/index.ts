@@ -28,6 +28,10 @@ interface AppState {
   xpLog:    XPLogEntry[]
   alarms:   AlarmConfig[]
 
+  // Realtime computed or raw
+  unreadChats: number
+  notifications: any[]
+
   // Stats
   xp:           number
   earnedBadges: string[]
@@ -50,6 +54,8 @@ interface AppState {
   setTheme:      (t: 'light' | 'dark') => void
   setSidebarOpen:(v: boolean) => void
   setStats:      (xp: number, badges: string[]) => void
+  setUnreadChats:(count: number) => void
+  setNotifications: (n: any[]) => void
   addXP:         (amount: number, reason: string) => Promise<void>
   checkBadges:   () => Promise<void>
   computeMaxStreak: () => void
@@ -60,6 +66,7 @@ export const useStore = create<AppState>()(
     (set, get) => ({
       userId: null, userEmail: null, userName: null,
       habits: [], journals: [], todos: [], moods: [], xpLog: [], alarms: [],
+      unreadChats: 0, notifications: [],
       xp: 0, earnedBadges: [], maxStreak: 0,
       isLoading: true, theme: 'light', sidebarOpen: true,
 
@@ -74,6 +81,8 @@ export const useStore = create<AppState>()(
       setTheme:       (t) => set({ theme: t }),
       setSidebarOpen: (v) => set({ sidebarOpen: v }),
       setStats:       (xp, earnedBadges) => set({ xp, earnedBadges }),
+      setUnreadChats: (c) => set({ unreadChats: c }),
+      setNotifications: (n) => set({ notifications: n }),
 
       computeMaxStreak: () => {
         const { habits } = get()

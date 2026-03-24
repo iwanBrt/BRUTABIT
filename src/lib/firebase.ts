@@ -34,6 +34,7 @@ export const COLS = {
   users:    'users',
   posts:    'posts',
   chats:    'chats',
+  notifications: 'notifications',
   habits:   (uid: string) => `users/${uid}/habits`,
   journals: (uid: string) => `users/${uid}/journals`,
   todos:    (uid: string) => `users/${uid}/todos`,

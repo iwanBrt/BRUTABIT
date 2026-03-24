@@ -11,6 +11,7 @@ import { id as localeId } from 'date-fns/locale'
 function ChatItem({ chat, userId, router }: { chat: any, userId: string, router: any }) {
   const [targetName, setTargetName] = useState('')
   const otherUid = chat.participants.find((p: string) => p !== userId)
+  const unreadCount = chat.unreadCount?.[userId] || 0
 
   useEffect(() => {
     if (!otherUid) return
@@ -46,8 +47,13 @@ function ChatItem({ chat, userId, router }: { chat: any, userId: string, router:
           {chat.lastMessage || 'Menunggu pesan pertama...'}
         </p>
       </div>
-      <div className="text-gray-400 group-hover:text-neo-black transition-colors">
+      <div className="text-gray-400 group-hover:text-neo-black transition-colors relative">
         <MessageSquare size={24} />
+        {unreadCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-brand-red text-white font-mono font-bold text-[10px] w-5 h-5 flex items-center justify-center border-[2px] border-neo-black rounded-full shadow-[2px_2px_0px_#0a0a0a]">
+            {unreadCount}
+          </span>
+        )}
       </div>
     </div>
   )

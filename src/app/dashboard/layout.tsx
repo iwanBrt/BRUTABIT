@@ -2,6 +2,7 @@
 'use client'
 
 import { Sidebar } from '@/components/layout/Sidebar'
+import { NotificationMenu } from '@/components/layout/NotificationMenu'
 import { useStore } from '@/store'
 import { clsx } from 'clsx'
 
@@ -11,9 +12,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className={clsx('min-h-screen', theme === 'dark' && 'dark')}>
       <Sidebar />
+      <NotificationMenu />
 
       {/* Topbar (mobile) */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-neo-black border-b-[3px] border-brand-yellow flex items-center px-4 py-3 gap-3">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-neo-black border-b-[3px] border-brand-yellow flex items-center px-4 py-3 gap-3 pr-16">
         <button
           onClick={() => setSidebarOpen(true)}
           className="font-mono font-bold text-brand-yellow text-lg"

@@ -23,7 +23,7 @@ const NAV_ITEMS = [
 export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
-  const { xp, todos, userName, userEmail, sidebarOpen, setSidebarOpen, theme, setTheme } = useStore()
+  const { xp, todos, userName, userEmail, sidebarOpen, setSidebarOpen, theme, setTheme, unreadChats } = useStore()
   const activeTodos = todos.filter(t => !t.done).length
 
   const handleLogout = async () => {
@@ -87,6 +87,11 @@ export function Sidebar() {
               {item.label === 'TO-DO' && activeTodos > 0 && (
                 <span className="bg-brand-red text-white font-mono font-bold text-[9px] px-1.5 py-0.5 border border-brand-yellow">
                   {activeTodos}
+                </span>
+              )}
+              {item.label === 'CHATS' && unreadChats > 0 && (
+                <span className="bg-brand-blue text-white font-mono font-bold text-[9px] px-1.5 py-0.5 border border-brand-yellow">
+                  {unreadChats}
                 </span>
               )}
             </Link>

@@ -48,7 +48,7 @@ export default function FeedPage() {
     }
   }
 
-  const toggleLike = async (postId: string, hasLiked: boolean) => {
+  const toggleLike = async (postId: string, hasLiked: boolean, authorId: string) => {
     if (!userId) return
     const postRef = doc(db, COLS.posts, postId)
     try {
@@ -56,6 +56,18 @@ export default function FeedPage() {
         await updateDoc(postRef, { likes: arrayRemove(userId) })
       } else {
         await updateDoc(postRef, { likes: arrayUnion(userId) })
+        // Send notification
+        if (authorId !== userId) {
+          await addDoc(collection(db, COLS.notifications), {
+            userId: authorId,
+            actorId: userId,
+            actorName: userName || 'Anonim',
+            type: 'like',
+            postId,
+            read: false,
+            createdAt: new Date().toISOString()
+          })
+        }
       }
     } catch (e) {
       toast.error('Gagal like, pastikan rules firestore sudah update')
@@ -121,7 +133,7 @@ export default function FeedPage() {
               
               <div className="flex gap-4 border-t-[3px] border-neo-black dark:border-white pt-4 mt-2">
                 <button 
-                  onClick={() => toggleLike(post.id, hasLiked)}
+                  onClick={() => toggleLike(post.id, hasLiked, post.authorId)}
                   className={clsx("flex items-center gap-2 font-mono text-sm font-bold transition-transform hover:-translate-y-1 border-[2px] px-3 py-1 bg-white dark:bg-neo-black", hasLiked ? "text-brand-red border-brand-red" : "text-neo-black dark:text-white border-neo-black dark:border-white")}
                 >
                   <Heart size={16} className={hasLiked ? "fill-current" : ""} /> {post.likes?.length || 0}
